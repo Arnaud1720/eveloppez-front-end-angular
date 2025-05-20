@@ -1,0 +1,8 @@
+/* largeur max de 450 px, centre le canvas et garde le ratio */
+.pie-chart {
+  display: block;     /* enlève l’espace blanc sous le canvas */
+  margin: 0 auto;     /* centre horizontalement */
+  max-width: 450px;   /* change la valeur à ta convenance */
+  width: 100%;        /* devient responsive */
+  height: auto;       /* garde les proportions */
+}

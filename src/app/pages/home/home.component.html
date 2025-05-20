@@ -1,3 +1,17 @@
 <h2>Olympic games app</h2>
 <hr />
-<p>{{ (olympics$ | async)?.length }} data loaded</p>
+<!--<p>{{ (olympics$ | async)?.length }} data loaded</p>-->
+<ul *ngIf="olympics$ | async as olympics; else loading">
+  <li *ngFor="let o of olympics">
+    {{ o.country }} : {{ getTotalMedals(o) }} médailles
+  </li>
+</ul>
+
+<h2>Répartition des médailles par pays</h2>
+<canvas #pieCanvas class="pie-chart"></canvas>
+
+<ng-template #loading>
+  <p>Chargement…</p>
+</ng-template>
+<!--au même titre que PHP -->
+<pre *ngIf="olympics$ | async as o">{{ o | json }}</pre>
