@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 import { Chart, registerables } from 'chart.js';
 import {Olympic} from "../../core/models/Olympic";
+import {Router} from "@angular/router";
 Chart.register(...registerables);   // une ligne, et basta
 @Component({
   selector: 'app-home',
@@ -12,8 +13,9 @@ Chart.register(...registerables);   // une ligne, et basta
 )
 export class HomeComponent implements OnInit {
   public olympics$: Observable<any> = of(null);
+  olympics: Olympic[] = [];
 
-  constructor(private olympicService: OlympicService) {}
+  constructor(private olympicService: OlympicService,private router: Router) {}
 
   ngOnInit(): void {
     this.olympics$ = this.olympicService.getOlympics();
@@ -50,15 +52,14 @@ export class HomeComponent implements OnInit {
 // ---------------------------------------------------------------------------
 
   ngAfterViewInit(): void {
-    // olympics$ est un Observable (flux de données) fourni par le service.
-    // On s’abonne pour recevoir la liste des pays dès qu’elle est disponible.
     this.olympics$.subscribe((olympics) => {
-      // Si le JSON est bien chargé, on dessine le graphique.
       if (olympics) {
+        this.olympics = olympics; // ← à ne pas oublier
         this.drawChart(olympics);
       }
     });
   }
+
 
 // ---------------------------------------------------------------------------
 // 4) draw Camembert (fonction privée du composant)
@@ -79,8 +80,18 @@ export class HomeComponent implements OnInit {
     new Chart(this.pieCanvas.nativeElement, {
       type: 'pie',
       data: { labels, datasets: [{ data: values }] },
-      options: { responsive: true },   // le graphe s’adapte à la largeur dispo
+      options: {
+        responsive: true,
+        onClick: (_e, el) => {
+          if (el.length) {
+            const index = el[0].index;          // part cliquée
+            const id    = this.olympics[index].id;
+            this.router.navigate(['/details', id]);
+          }
+        },
+      },
     });
+
   }
 
 }
