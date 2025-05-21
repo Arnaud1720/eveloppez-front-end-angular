@@ -1,28 +1,29 @@
-<div class="detail-container" *ngIf="country">
-
-<!-- Retour à l'accueil -->
+<div *ngIf="country" class="details-container">
+  <!-- Bouton retour -->
   <button routerLink="/" class="btn-retour">← Retour</button>
 
-  <!-- Nom du pays -->
+  <!-- Titre -->
   <h2>{{ country?.country }}</h2>
 
-  <!-- Chiffres clés -->
-  <div class="statistiques">
+  <!-- Statistiques principales -->
+  <div class="stats">
     <p><strong>Nombre de participations :</strong> {{ country!.participations.length }}</p>
     <p><strong>Total de médailles :</strong> {{ totalMedals }}</p>
     <p><strong>Total d'athlètes :</strong> {{ totalAthletes }}</p>
   </div>
 
   <!-- Graphique -->
-  <div class="chart-container">
+  <div class="chart">
     <canvas #lineCanvas></canvas>
   </div>
 
-  <!-- (facultatif) Détail des participations -->
-  <h3>Participations</h3>
+  <!-- Liste des participations -->
+  <h3>Participations :</h3>
   <ul>
     <li *ngFor="let p of country?.participations">
-      {{ p.year }} - {{ p.city }} : {{ p.medalsCount }} médailles
+      {{ p.year }} – {{ p.city }} :
+      {{ p.medalsCount }} médailles,
+      {{ p.athleteCount }} athlètes
     </li>
   </ul>
 </div>
