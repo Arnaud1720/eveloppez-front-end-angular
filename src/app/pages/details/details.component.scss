@@ -1,0 +1,58 @@
+.details-wrapper {
+  max-width: 800px;
+  margin: auto;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+}
+
+.country-title {
+  background-color: #00796b;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 2rem;
+}
+
+.stat-blocks {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 2rem;
+  text-align: center;
+
+  .stat {
+    border: 2px solid #00796b;
+    border-radius: 6px;
+    padding: 1rem 1.5rem;
+
+    .label {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .value {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+.chart-container {
+  position: relative;
+  margin-top: 2rem;
+
+  canvas {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .chart-label {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: #666;
+  }
+}

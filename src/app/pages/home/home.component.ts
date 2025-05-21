@@ -4,7 +4,7 @@ import { OlympicService } from 'src/app/core/services/olympic.service';
 import { Chart, registerables } from 'chart.js';
 import {Olympic} from "../../core/models/Olympic";
 import {Router} from "@angular/router";
-Chart.register(...registerables);   // une ligne, et basta
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -86,7 +86,7 @@ export class HomeComponent implements OnInit {
           if (el.length) {
             const index = el[0].index;          // part cliquée
             const id    = this.olympics[index].id;
-            this.router.navigate(['/details', id]);
+            this.router.navigate(['/details', id]).then(r => "**/");
           }
         },
       },

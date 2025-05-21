@@ -1,9 +1,9 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {OlympicService} from "../../core/services/olympic.service";
 import {Olympic} from "../../core/models/Olympic";
 import {Chart} from "chart.js";
 import {NgIf} from "@angular/common";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-details',
@@ -26,7 +26,6 @@ export class DetailsComponent implements OnInit{
   constructor(
     private route: ActivatedRoute,
     private olympicService: OlympicService,
-    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -54,19 +53,46 @@ export class DetailsComponent implements OnInit{
   private drawLineChart(): void {
     const years: number[] = [];
     const medals: number[] = [];
+    const athletes: number[] = [];
 
     for (const p of this.country!.participations) {
       years.push(p.year);
       medals.push(p.medalsCount);
+      athletes.push(p.athleteCount); // ← nouvelle série de données
     }
 
     new Chart(this.lineCanvas.nativeElement, {
       type: 'line',
       data: {
         labels: years,
-        datasets: [{ label: 'Médailles', data: medals }],
+        datasets: [
+          {
+            label: 'Médailles',
+            data: medals,
+            borderColor: 'blue',
+            backgroundColor: 'lightblue',
+          },
+          {
+            label: 'Athlètes',
+            data: athletes,
+            borderColor: 'green',
+            backgroundColor: 'lightgreen',
+          }
+        ],
       },
-      options: { responsive: true },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Médailles et athlètes par année'
+          }
+        }
+      },
     });
   }
+
+
+
 }
+
