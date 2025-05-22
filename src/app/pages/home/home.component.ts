@@ -4,6 +4,7 @@ import { OlympicService } from 'src/app/core/services/olympic.service';
 import { Chart, registerables } from 'chart.js';
 import {Olympic} from "../../core/models/Olympic";
 import {Router} from "@angular/router";
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-home',
@@ -11,15 +12,20 @@ import {Router} from "@angular/router";
   styleUrls: ['./home.component.scss'],
 }
 )
+
 export class HomeComponent implements OnInit {
   public olympics$: Observable<any> = of(null);
   olympics: Olympic[] = [];
+  numberOfCountries = 0;
+  numberOfJOs = 0;
 
   constructor(private olympicService: OlympicService,private router: Router) {}
 
   ngOnInit(): void {
+
     this.olympics$ = this.olympicService.getOlympics();
   }
+
 // ---------------------------------------------------------------------------
 // 1) Fonction utilitaire : calculer le total de médailles d’un pays
 // ---------------------------------------------------------------------------
@@ -52,14 +58,31 @@ export class HomeComponent implements OnInit {
 // ---------------------------------------------------------------------------
 
   ngAfterViewInit(): void {
+    // On s’abonne au flux olympics$ qui contient les données du fichier JSON
     this.olympics$.subscribe((olympics) => {
+
+      // Si les données sont bien chargées (non nulles)
       if (olympics) {
-        this.olympics = olympics; // ← à ne pas oublier
+
+        // On les stocke dans une variable locale pour pouvoir les réutiliser
+        this.olympics = olympics;
+
+        // 🔽 Optionnel : ici on peut préparer d'autres données (stats, compteurs…)
+        this.numberOfCountries = olympics.length;
+
+        const years = new Set<number>();
+        for (const country of olympics) {
+          for (const participation of country.participations) {
+            years.add(participation.year);
+          }
+        }
+        this.numberOfJOs = years.size;
+
+        // Ensuite, on dessine le camembert avec les données récupérées
         this.drawChart(olympics);
       }
     });
   }
-
 
 // ---------------------------------------------------------------------------
 // 4) draw Camembert (fonction privée du composant)

@@ -6,3 +6,53 @@
   width: 100%;        /* devient responsive */
   height: auto;       /* garde les proportions */
 }
+.pie-chart-title {
+  display: block;     /* enlève l’espace blanc sous le canvas */
+  margin: 26px auto;     /* centre horizontalement */
+  max-width: 450px;   /* change la valeur à ta convenance */
+  width: 100%;        /* devient responsive */
+  font-size: 30px;    /* augemente la taille de la police */
+  color: red;         /* modifie la couleur */
+  height: auto;       /* garde les proportions */
+}
+.overview-section {
+  text-align: center;
+  margin: 2rem auto;
+
+  .overview-title {
+    background-color: #00796b;
+    color: white;
+    display: inline-block;
+    padding: 0.6rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .overview-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+
+    .overview-box {
+      border: 2px solid #00796b;
+      border-radius: 10px;
+      padding: 10px 13px;
+      min-width: 140px;
+
+      .label {
+        color: #555;
+        font-size: 0.9rem;
+      }
+
+      .value {
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-top: 0.5rem;
+      }
+    }
+  }
+}

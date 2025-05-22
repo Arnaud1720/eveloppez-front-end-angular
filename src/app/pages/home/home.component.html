@@ -6,13 +6,25 @@
     {{ o.country }} : {{ getTotalMedals(o) }} médailles
   </li>
 </ul>
-
-<h2>Répartition des médailles par pays</h2>
+<div class="overview-section">
+  <div class="overview-title">Medals per Country</div>
+  <div class="overview-stats">
+    <div class="overview-box">
+      <p class="label">Number of JOs</p>
+      <p class="value">{{ numberOfJOs }}</p>
+    </div>
+    <div class="overview-box">
+      <p class="label">Number of countries</p>
+      <p class="value">{{ numberOfCountries }}</p>
+    </div>
+  </div>
+</div>
+<h2 class="pie-chart-title">Répartition des médailles par pays</h2>
 <canvas #pieCanvas class="pie-chart"></canvas>
 
 <ng-template #loading>
   <p>Chargement…</p>
 </ng-template>
 <!--au même titre que PHP -->
-<pre *ngIf="olympics$ | async as o">{{ o | json }}</pre>
+<!--<pre *ngIf="olympics$ | async as o">{{ o | json }}</pre>-->
 
