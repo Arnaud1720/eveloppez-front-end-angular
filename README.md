@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # OlympicGamesStarter
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.3.
@@ -30,4 +29,3 @@ You're now ready to implement the requested features.
 Good luck!
 =======
 # eveloppez-front-end-angular
->>>>>>> 80eb80c1bb6fb3af5693ecc19f2b29a1169b26c2
