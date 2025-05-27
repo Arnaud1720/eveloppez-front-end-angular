@@ -4,13 +4,16 @@ import { OlympicService } from 'src/app/core/services/olympic.service';
 import { Chart, registerables } from 'chart.js';
 import {Olympic} from "../../core/models/Olympic";
 import {Router} from "@angular/router";
-Chart.register(...registerables);
+// @ts-ignore
+import Outlabels from '@energiency/chartjs-plugin-piechart-outlabels';
+
+Chart.register(...registerables, Outlabels);
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-}
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+  }
 )
 
 export class HomeComponent implements OnInit {
@@ -46,28 +49,17 @@ export class HomeComponent implements OnInit {
     }
     return total;
   }
-// ---------------------------------------------------------------------------
-// 2) Récupérer le <canvas> dans lequel Chart.js dessinera le camembert
-// ---------------------------------------------------------------------------
 
-// @ViewChild dit à Angular : « Donne-moi la référence de ce canvas ».
   @ViewChild('pieCanvas') pieCanvas!: ElementRef<HTMLCanvasElement>;
 
-// ---------------------------------------------------------------------------
-// 3) ngAfterViewInit = moment où le template est entièrement rendu
-// ---------------------------------------------------------------------------
-
   ngAfterViewInit(): void {
-    // On s’abonne au flux olympics$ qui contient les données du fichier JSON
     this.olympics$.subscribe((olympics) => {
 
-      // Si les données sont bien chargées (non nulles)
       if (olympics) {
 
-        // On les stocke dans une variable locale pour pouvoir les réutiliser
+
         this.olympics = olympics;
 
-        // 🔽 Optionnel : ici on peut préparer d'autres données (stats, compteurs…)
         this.numberOfCountries = olympics.length;
 
         const years = new Set<number>();
@@ -77,8 +69,6 @@ export class HomeComponent implements OnInit {
           }
         }
         this.numberOfJOs = years.size;
-
-        // Ensuite, on dessine le camembert avec les données récupérées
         this.drawChart(olympics);
       }
     });
@@ -87,34 +77,70 @@ export class HomeComponent implements OnInit {
 // ---------------------------------------------------------------------------
 // 4) draw Camembert (fonction privée du composant)
 // ---------------------------------------------------------------------------
-  private drawChart(data: any[]): void {
-    // Préparer deux tableaux :
-    const labels: string[] = []; // contiendra les noms des pays
-    const values: number[] = []; // contiendra le total de médailles
+  private drawChart(data: Olympic[]): void {
+    const labels = data.map(c => c.country);
+    const values = data.map(c => this.getTotalMedals(c));
 
-    // On boucle simplement sur chaque pays du JSON
-    for (const c of data) {
-      labels.push(c.country);          // ex. "Italy"
-      values.push(this.getTotalMedals(c)); // ex. 96
-
-    }
-
-    // On crée enfin le diagramme avec Chart.js
     new Chart(this.pieCanvas.nativeElement, {
       type: 'pie',
       data: { labels, datasets: [{ data: values }] },
       options: {
-        responsive: true,
-        onClick: (_e, el) => {
-          if (el.length) {
-            const index = el[0].index;          // part cliquée
-            const id    = this.olympics[index].id;
-            this.router.navigate(['/details', id]).then(r => "**/");
+        responsive:          true,
+        maintainAspectRatio: false,
+        radius: '60%',
+        layout: { padding: 64 },
+
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              boxWidth: 30,
+              padding: 25,
+              font: {
+                size: 16,
+                weight: 'lighter'
+              },
+              color: '#000'
+            }
+          },
+          // @ts-ignore
+          outlabels: {
+            display:    true,
+            text:       '%l',
+            color:      '#000',
+            lineColor:  '#666',
+            lineWidth:  1,
+            stretch:    80,
+            backgroundColor: 'transparent',
+            padding:    12,
+            font: {
+              resizable: true,
+              minSize:   12,
+              maxSize:   16,
+              weight:    'bold'
+            }
+          },
+          tooltip: {
+            displayColors: false,
+            callbacks: {
+              label: ctx => `🏅 ${ctx.label}: ${ctx.parsed}`
+            }
           }
         },
-      },
-    });
 
+        onClick: (_e, items) => {
+          if (items.length) {
+            const id = this.olympics[items[0].index].id;
+            this.router.navigate(['/details', id]);
+          }
+        }
+      },
+
+      plugins: [ Outlabels ]
+    });
   }
+
+
+
 
 }

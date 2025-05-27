@@ -1,39 +1,39 @@
-/* largeur max de 450 px, centre le canvas et garde le ratio */
 .pie-chart {
-  display: block;     /* enlève l’espace blanc sous le canvas */
-  margin: 0 auto;     /* centre horizontalement */
-  max-width: 450px;   /* change la valeur à ta convenance */
-  width: 100%;        /* devient responsive */
-  height: auto;       /* garde les proportions */
+  display: block;
+  margin: 32px auto;
+  max-width: 800px;
+  width: 100%;
+  height: 600px;
 }
+
 .pie-chart-title {
-  display: block;     /* enlève l’espace blanc sous le canvas */
-  margin: 26px auto;     /* centre horizontalement */
-  max-width: 450px;   /* change la valeur à ta convenance */
-  width: 100%;        /* devient responsive */
-  font-size: 30px;    /* augemente la taille de la police */
-  color: red;         /* modifie la couleur */
-  height: auto;       /* garde les proportions */
+  display: block;
+  margin: 26px auto;
+  max-width: 450px;
+  width: 100%;
+  font-size: 30px;
+  color: red;
+  height: auto;
 }
 .overview-section {
   text-align: center;
-  margin: 2rem auto;
+  margin: 32px auto;
 
   .overview-title {
     background-color: #00796b;
     color: white;
     display: inline-block;
-    padding: 0.6rem 1.5rem;
+    padding: 9.6px 24px;
     border-radius: 10px;
     font-weight: 500;
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
+    font-size: 19.2px;
+    margin-bottom: 16px;
   }
 
   .overview-stats {
     display: flex;
     justify-content: center;
-    gap: 2rem;
+    gap: 32px ;
     flex-wrap: wrap;
     margin-top: 1rem;
 
@@ -45,11 +45,11 @@
 
       .label {
         color: #555;
-        font-size: 0.9rem;
-      }
+        font-size: 14px
+        }
 
       .value {
-        font-size: 1.4rem;
+        font-size: 22px;
         font-weight: bold;
         margin-top: 0.5rem;
       }
