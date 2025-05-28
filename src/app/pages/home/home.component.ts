@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 import { Chart, registerables } from 'chart.js';
@@ -16,13 +16,13 @@ Chart.register(...registerables, Outlabels);
   }
 )
 
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit  {
   public olympics$: Observable<any> = of(null);
   olympics: Olympic[] = [];
   numberOfCountries = 0;
   numberOfJOs = 0;
 
-  constructor(private olympicService: OlympicService,private router: Router) {}
+  constructor(private olympicService: OlympicService,private router: Router,    private cd: ChangeDetectorRef,) {}
 
   ngOnInit(): void {
 
@@ -51,47 +51,51 @@ export class HomeComponent implements OnInit {
   }
 
   @ViewChild('pieCanvas') pieCanvas!: ElementRef<HTMLCanvasElement>;
-
+  private pieChart!: Chart;
   ngAfterViewInit(): void {
     this.olympics$.subscribe((olympics) => {
+      if (!olympics?.length) return;
 
-      if (olympics) {
-
-
-        this.olympics = olympics;
-
-        this.numberOfCountries = olympics.length;
-
-        const years = new Set<number>();
-        for (const country of olympics) {
-          for (const participation of country.participations) {
-            years.add(participation.year);
-          }
-        }
-        this.numberOfJOs = years.size;
-        this.drawChart(olympics);
-      }
+      this.olympics = olympics;
+      this.numberOfCountries = olympics.length;
+      this.numberOfJOs      = new Set(olympics.flatMap((c: { participations: any[]; }) => c.participations.map(p => p.year))).size;
+      this.cd.detectChanges();
+      this.drawChart(olympics);
     });
   }
 
 // ---------------------------------------------------------------------------
 // 4) draw Camembert (fonction privée du composant)
 // ---------------------------------------------------------------------------
+
   private drawChart(data: Olympic[]): void {
     const labels = data.map(c => c.country);
     const values = data.map(c => this.getTotalMedals(c));
 
-    new Chart(this.pieCanvas.nativeElement, {
+    // Si un chart existait déjà, on le détruit
+    if (this.pieChart) {
+      this.pieChart.destroy();
+    }
+    // On stocke la nouvelle instance
+    this.pieChart = new Chart(this.pieCanvas.nativeElement,{
       type: 'pie',
       data: { labels, datasets: [{ data: values }] },
       options: {
         responsive:          true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: true,
+        aspectRatio:1,
+        resizeDelay: 200,
         radius: '60%',
-        layout: { padding: 64 },
+        layout: {
+          padding: 64
+
+        },
+
 
         plugins: {
+          // on passe display a true si on veut ajouter les légendes
           legend: {
+            display: false,
             position: 'top',
             labels: {
               boxWidth: 30,
@@ -105,12 +109,14 @@ export class HomeComponent implements OnInit {
           },
           // @ts-ignore
           outlabels: {
+            offset:   -10,   // on colle un peu le texte
+            stretch:  40,
+            autoHide:   false,
             display:    true,
             text:       '%l',
             color:      '#000',
             lineColor:  '#666',
             lineWidth:  1,
-            stretch:    80,
             backgroundColor: 'transparent',
             padding:    12,
             font: {
@@ -123,6 +129,7 @@ export class HomeComponent implements OnInit {
           tooltip: {
             displayColors: false,
             callbacks: {
+              title: () => '',
               label: ctx => `🏅 ${ctx.label}: ${ctx.parsed}`
             }
           }
@@ -134,13 +141,18 @@ export class HomeComponent implements OnInit {
             this.router.navigate(['/details', id]);
           }
         }
+
       },
 
       plugins: [ Outlabels ]
+
     });
   }
-
-
-
-
+  @HostListener('window:resize')
+  onWindowResize() {
+    if (this.pieChart) {
+      this.pieChart.destroy();
+      this.drawChart(this.olympics);
+    }
+  }
 }
