@@ -57,9 +57,7 @@
   }
 }
 
-/* ————————————————————————
-   TABLETTE (≤ 768px)
-———————————————————————— */
+
 @media (max-width: 768px) {
   .details-wrapper {
     padding: 1.5rem;
@@ -111,7 +109,6 @@
   }
 
   .stat-blocks {
-    /* empilement en colonne */
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
