@@ -35,7 +35,6 @@
       this.olympicService.getOlympics().subscribe({
         next: data => {
           if (!Array.isArray(data)) {
-            // soit on attend le prochain émit, soit on affiche un loader…
             return;
           }
           this.country = data.find((c: { id: number; }) => c.id === id)!;
@@ -56,7 +55,6 @@
     private drawLineChart(): void {
       const years = this.country.participations.map(p => p.year);
       const medals = this.country.participations.map(p => p.medalsCount);
-      // const athletes = this.country.participations.map(p => p.athleteCount);
 
       new Chart(this.lineCanvas.nativeElement, {
         type: 'line',
@@ -64,14 +62,11 @@
           labels: years,
           datasets: [
             {label: 'Médailles', data: medals, borderColor: 'blue', backgroundColor: 'lightblue'},
-            // {label: 'Athlètes', data: athletes, borderColor: 'green', backgroundColor: 'lightgreen'}
           ]
         },
         options: {
           responsive: true,
-          plugins: {
-            title: {display: true, text: 'Médailles et athlètes par année'}
-          }
+
         }
       });
     }

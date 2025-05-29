@@ -17,8 +17,7 @@ Chart.register(...registerables, Outlabels);
 )
 
 export class HomeComponent implements OnInit, AfterViewInit  {
-  public olympics$: Observable<any> = of(null);
-  olympics: Olympic[] = [];
+  public olympics$: Observable<Olympic[]> = of([]);  olympics: Olympic[] = [];
   numberOfCountries = 0;
   numberOfJOs = 0;
 
@@ -29,24 +28,12 @@ export class HomeComponent implements OnInit, AfterViewInit  {
     this.olympics$ = this.olympicService.getOlympics();
   }
 
-// ---------------------------------------------------------------------------
-// 1) Fonction utilitaire : calculer le total de médailles d’un pays
-// ---------------------------------------------------------------------------
-
   getTotalMedals(country: any): number {
     let total = 0;
     for (const p of country.participations) {
       total += p.medalsCount;
     }
 
-    // On renvoie le total calculé
-    return total;
-  }
-  getTotalAthletes(country: Olympic): number {
-    let total = 0;
-    for (const p of country.participations) {
-      total += p.athleteCount;
-    }
     return total;
   }
 
@@ -64,19 +51,13 @@ export class HomeComponent implements OnInit, AfterViewInit  {
     });
   }
 
-// ---------------------------------------------------------------------------
-// 4) draw Camembert (fonction privée du composant)
-// ---------------------------------------------------------------------------
-
   private drawChart(data: Olympic[]): void {
     const labels = data.map(c => c.country);
     const values = data.map(c => this.getTotalMedals(c));
 
-    // Si un chart existait déjà, on le détruit
     if (this.pieChart) {
       this.pieChart.destroy();
     }
-    // On stocke la nouvelle instance
     this.pieChart = new Chart(this.pieCanvas.nativeElement,{
       type: 'pie',
       data: { labels, datasets: [{ data: values }] },
@@ -90,8 +71,6 @@ export class HomeComponent implements OnInit, AfterViewInit  {
           padding: 64
 
         },
-
-
         plugins: {
           // on passe display a true si on veut ajouter les légendes
           legend: {
@@ -107,9 +86,9 @@ export class HomeComponent implements OnInit, AfterViewInit  {
               color: '#000'
             }
           },
-          // @ts-ignore
+            // @ts-ignore
           outlabels: {
-            offset:   -10,   // on colle un peu le texte
+            offset:   -10,
             stretch:  40,
             autoHide:   false,
             display:    true,
@@ -135,7 +114,7 @@ export class HomeComponent implements OnInit, AfterViewInit  {
           }
         },
 
-        onClick: (_e, items) => {
+        onClick: (event, items) => {
           if (items.length) {
             const id = this.olympics[items[0].index].id;
             this.router.navigate(['/details', id]);
