@@ -17,35 +17,34 @@ Chart.register(...registerables, Outlabels);
 )
 
 export class HomeComponent implements OnInit, AfterViewInit  {
-  public olympics$: Observable<Olympic[]> = of([]);  olympics: Olympic[] = [];
+  public olympics$: Observable<Olympic[]> = of([] as Olympic[]);
+  olympics: Olympic[] = [];
   numberOfCountries = 0;
   numberOfJOs = 0;
 
-  constructor(private olympicService: OlympicService,private router: Router,    private cd: ChangeDetectorRef,) {}
+  @ViewChild('pieCanvas') pieCanvas!: ElementRef<HTMLCanvasElement>;
+  private pieChart!: Chart;
+
+  constructor(
+    private olympicService: OlympicService,
+    private router: Router,
+    private cd: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
-
+    // On récupère l’Observable depuis le service
     this.olympics$ = this.olympicService.getOlympics();
   }
 
-  getTotalMedals(country: any): number {
-    let total = 0;
-    for (const p of country.participations) {
-      total += p.medalsCount;
-    }
-
-    return total;
-  }
-
-  @ViewChild('pieCanvas') pieCanvas!: ElementRef<HTMLCanvasElement>;
-  private pieChart!: Chart;
   ngAfterViewInit(): void {
-    this.olympics$.subscribe((olympics) => {
-      if (!olympics?.length) return;
+    this.olympics$.subscribe((olympics: Olympic[]) => {
+      if (!olympics?.length) { return; }
 
       this.olympics = olympics;
       this.numberOfCountries = olympics.length;
-      this.numberOfJOs      = new Set(olympics.flatMap((c: { participations: any[]; }) => c.participations.map(p => p.year))).size;
+      // On délègue le calcul du nombre d’éditions au service
+      this.numberOfJOs = this.olympicService.getNumberOfJOs(olympics);
+
       this.cd.detectChanges();
       this.drawChart(olympics);
     });
@@ -53,57 +52,37 @@ export class HomeComponent implements OnInit, AfterViewInit  {
 
   private drawChart(data: Olympic[]): void {
     const labels = data.map(c => c.country);
-    const values = data.map(c => this.getTotalMedals(c));
+    // On délègue le calcul des médailles totales au service
+    const values = data.map(c => this.olympicService.getTotalMedals(c));
 
     if (this.pieChart) {
       this.pieChart.destroy();
     }
-    this.pieChart = new Chart(this.pieCanvas.nativeElement,{
+    this.pieChart = new Chart(this.pieCanvas.nativeElement, {
       type: 'pie',
       data: { labels, datasets: [{ data: values }] },
       options: {
-        responsive:          true,
+        responsive: true,
         maintainAspectRatio: true,
-        aspectRatio:1,
+        aspectRatio: 1,
         resizeDelay: 200,
         radius: '60%',
-        layout: {
-          padding: 64
-
-        },
+        layout: { padding: 64 },
         plugins: {
-          // on passe display a true si on veut ajouter les légendes
-          legend: {
-            display: false,
-            position: 'top',
-            labels: {
-              boxWidth: 30,
-              padding: 25,
-              font: {
-                size: 16,
-                weight: 'lighter'
-              },
-              color: '#000'
-            }
-          },
-            // @ts-ignore
+          legend: { display: false },
+          // @ts-ignore
           outlabels: {
-            offset:   -10,
-            stretch:  40,
-            autoHide:   false,
-            display:    true,
-            text:       '%l',
-            color:      '#000',
-            lineColor:  '#666',
-            lineWidth:  1,
+            offset: -10,
+            stretch: 40,
+            autoHide: false,
+            display: true,
+            text: '%l',
+            color: '#000',
+            lineColor: '#666',
+            lineWidth: 1,
             backgroundColor: 'transparent',
-            padding:    12,
-            font: {
-              resizable: true,
-              minSize:   12,
-              maxSize:   16,
-              weight:    'bold'
-            }
+            padding: 12,
+            font: { resizable: true, minSize: 12, maxSize: 16, weight: 'bold' }
           },
           tooltip: {
             displayColors: false,
@@ -113,20 +92,17 @@ export class HomeComponent implements OnInit, AfterViewInit  {
             }
           }
         },
-
         onClick: (event, items) => {
           if (items.length) {
             const id = this.olympics[items[0].index].id;
             this.router.navigate(['/details', id]);
           }
         }
-
       },
-
-      plugins: [ Outlabels ]
-
+      plugins: [Outlabels]
     });
   }
+
   @HostListener('window:resize')
   onWindowResize() {
     if (this.pieChart) {
