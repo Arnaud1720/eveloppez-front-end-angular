@@ -1,0 +1,27 @@
+<div *ngIf="country" class="details-wrapper">
+  <div class="country-title">{{ country.country }}</div>
+
+  <div class="stat-blocks">
+    <div class="stat">
+      <div class="label">Number of entries</div>
+      <div class="value">{{ country.participations.length }}</div>
+    </div>
+    <div class="stat">
+      <div class="label">Total number medals</div>
+      <div class="value">{{ totalMedals }}</div>
+    </div>
+    <div class="stat">
+      <div class="label">Total number of athletes</div>
+      <div class="value">{{ totalAthletes }}</div>
+    </div>
+  </div>
+
+  <!-- Graphique -->
+  <div class="chart-container">
+    <canvas #lineCanvas></canvas>
+
+    <div class="chart-label">Dates</div>
+  </div>
+  <button routerLink="/" class="btn-back">← Retour</button>
+
+</div>

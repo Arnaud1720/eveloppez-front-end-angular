@@ -1,0 +1,131 @@
+.pie-chart {
+  display: block;
+  margin: 32px auto;
+  max-width: 800px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.pie-chart-title {
+  display: block;
+  margin: 26px auto;
+  max-width: 450px;
+  width: 100%;
+  font-size: 30px;
+  color: red;
+  height: auto;
+}
+
+.overview-section {
+  text-align: center;
+  margin: 32px auto;
+
+  .overview-title {
+    background-color: #00796b;
+    color: white;
+    display: inline-block;
+    padding: 9.6px 24px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 19.2px;
+    margin-bottom: 16px;
+  }
+
+  .overview-stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+
+    .overview-box {
+      border: 2px solid #00796b;
+      border-radius: 10px;
+      padding: 0 13px 0 13px;
+      min-width: 100px;
+
+      .label {
+        color: #555;
+        font-size: 14px;
+      }
+
+      .value {
+        font-size: 22px;
+        font-weight: bold;
+        margin-top: 0.5rem;
+      }
+    }
+  }
+}
+
+
+@media (max-width: 768px) {
+  .pie-chart {
+    margin: 24px auto;
+  }
+  .pie-chart-title {
+    font-size: 26px;
+    margin: 20px auto;
+  }
+  .overview-section {
+    margin: 24px auto;
+
+    .overview-title {
+      font-size: 17px;
+      padding: 8px 20px;
+    }
+
+    .overview-stats {
+      /* plutôt une grille deux colonnes */
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+
+      .overview-box {
+        padding: 8px 10px;
+
+        .label {
+          font-size: 13px;
+        }
+        .value {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}
+@media (max-width: 480px) {
+  .pie-chart {
+    margin: 16px auto;
+  }
+  .pie-chart-title {
+    font-size: 22px;
+    margin: 16px auto;
+  }
+  .overview-section {
+    margin: 16px auto;
+
+    .overview-title {
+      font-size: 15px;
+      padding: 6px 16px;
+    }
+
+    .overview-stats {
+      display: flex;
+      //flex-direction: column;
+      gap: 12px;
+
+      .overview-box {
+        min-width: auto;
+        padding: 0 6px;
+
+        .label {
+          font-size: 12px;
+        }
+        .value {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+}
