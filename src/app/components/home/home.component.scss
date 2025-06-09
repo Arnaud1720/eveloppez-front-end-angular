@@ -41,8 +41,8 @@
     .overview-box {
       border: 2px solid #00796b;
       border-radius: 10px;
-      padding: 10px 13px;
-      min-width: 140px;
+      padding: 0 13px 0 13px;
+      min-width: 100px;
 
       .label {
         color: #555;
@@ -112,12 +112,12 @@
 
     .overview-stats {
       display: flex;
-      flex-direction: column;
+      //flex-direction: column;
       gap: 12px;
 
       .overview-box {
         min-width: auto;
-        padding: 6px 8px;
+        padding: 0 6px;
 
         .label {
           font-size: 12px;

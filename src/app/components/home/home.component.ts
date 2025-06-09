@@ -86,9 +86,11 @@ export class HomeComponent implements OnInit, AfterViewInit  {
           },
           tooltip: {
             displayColors: false,
+            backgroundColor: '#00796b',
             callbacks: {
               title: () => '',
               label: ctx => `🏅 ${ctx.label}: ${ctx.parsed}`
+
             }
           }
         },
@@ -104,7 +106,7 @@ export class HomeComponent implements OnInit, AfterViewInit  {
   }
 
   @HostListener('window:resize')
-  onWindowResize() {
+  ifWindowResize() {
     if (this.pieChart) {
       this.pieChart.destroy();
       this.drawChart(this.olympics);
